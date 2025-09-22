@@ -5,7 +5,12 @@ from dotenv import load_dotenv
 load_dotenv(".env")
 URL = os.environ["SUPABASE_URL"].rstrip("/")
 KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
-HDR = {"apikey": KEY, "Authorization": f"Bearer {KEY}", "Content-Type": "application/json"}
+HDR = {
+  "apikey": KEY,
+  "Authorization": f"Bearer {KEY}",
+  "Content-Type": "application/json",
+  "Prefer": "resolution=merge-duplicates"
+}
 
 IN = "data/menu_items.jsonl"
 BATCH = 500
@@ -59,6 +64,9 @@ def main():
                     "currency": "USD",
                     "category": None,
                     "source_url": it.get("source_url"),
+                    "calories_kcal": it.get("calories_kcal"),
+                    "calories_text": it.get("calories_text"),
+                    
                 })
         # send in batches (uses unique constraint to drop dupes)
         for i in range(0, len(rows), BATCH):
